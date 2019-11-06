@@ -1,0 +1,19 @@
+{
+  "name": "realitio-gnosis-proxy",
+  "version": "0.0.1",
+  "description": "Smart contract that acts as an intermediary between the Realitio contract and the ConditionalTokens contract.",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "truffle test --network test"
+  },
+  "author": "",
+  "license": "LGPL-3.0",
+  "devDependencies": {
+    "@gnosis.pm/mock-contract": "^3.0.7",
+    "ethereumjs-abi": "^0.6.8",
+    "truffle": "^5.0.43"
+  }
+}
