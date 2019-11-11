@@ -27,7 +27,7 @@ contract('RealitioProxy', () => {
   it('should succeed if the question has been finalized with yes', async () => {
     const questionId = '0x1234567890'
     const realitioMock = await MockContract.new()
-    await realitioMock.givenAnyReturn(abi.rawEncode(['bytes32'], ['0x0']));
+    await realitioMock.givenAnyReturn(abi.rawEncode(['bytes32'], ['0x0000000000000000000000000000000000000000000000000000000000000001']));
 
     const conditionalTokensMock = await MockContract.new()
     await conditionalTokensMock.givenAnyReturnBool(true)
@@ -50,7 +50,7 @@ contract('RealitioProxy', () => {
   it('should succeed if the question has been finalized with no', async () => {
     const questionId = '0x1234567890'
     const realitioMock = await MockContract.new()
-    await realitioMock.givenAnyReturn(abi.rawEncode(['bytes32'], ['0x0000000000000000000000000000000000000000000000000000000000000001']));
+    await realitioMock.givenAnyReturn(abi.rawEncode(['bytes32'], ['0x0']));
 
     const conditionalTokensMock = await MockContract.new()
     await conditionalTokensMock.givenAnyReturnBool(true)

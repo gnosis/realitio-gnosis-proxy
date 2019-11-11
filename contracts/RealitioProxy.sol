@@ -21,10 +21,10 @@ contract RealitioProxy {
     uint answer = uint(realitio.resultFor(questionId));
 
     uint[] memory payouts = new uint[](2);
-    if (answer == 0) {
-      payouts[0] = 1;
-    } else if (answer == 1) {
+    if (answer == 0) { // answer is no
       payouts[1] = 1;
+    } else if (answer == 1) { // answer is yes
+      payouts[0] = 1;
     } else {
       revert('Only binary answers are supported');
     }
