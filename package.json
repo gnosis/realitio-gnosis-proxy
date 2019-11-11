@@ -13,6 +13,7 @@
   "license": "LGPL-3.0",
   "devDependencies": {
     "@gnosis.pm/mock-contract": "^3.0.7",
+    "@truffle/hdwallet-provider": "^1.0.24",
     "ethereumjs-abi": "^0.6.8",
     "truffle": "^5.0.43"
   }
