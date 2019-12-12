@@ -1,7 +1,7 @@
 pragma solidity ^0.5.12;
 
 contract ConditionalTokens {
-    function reportPayouts(bytes32 questionId, uint[] calldata payouts) external;
+    function reportPayouts(bytes32 questionId, uint256[] calldata payouts) external;
 }
 
 contract Realitio {
@@ -17,10 +17,10 @@ contract RealitioProxy {
     realitio = _realitio;
   }
 
-  function resolveCondition(bytes32 questionId) public {
-    uint answer = uint(realitio.resultFor(questionId));
+  function resolveBinaryCondition(bytes32 questionId) public {
+    uint256 answer = uint256(realitio.resultFor(questionId));
 
-    uint[] memory payouts = new uint[](2);
+    uint256[] memory payouts = new uint256[](2);
     if (answer == 0) { // answer is no
       payouts[1] = 1;
     } else if (answer == 1) { // answer is yes
@@ -28,6 +28,18 @@ contract RealitioProxy {
     } else {
       revert('Only binary answers are supported');
     }
+
+    conditionalTokens.reportPayouts(questionId, payouts);
+  }
+
+  function resolveSingleSelectCondition(bytes32 questionId, uint256 numOutcomes) public {
+    uint256 answer = uint256(realitio.resultFor(questionId));
+
+    require(answer < numOutcomes, "Answer must be between 0 and numOutcomes");
+
+    uint256[] memory payouts = new uint256[](numOutcomes);
+
+    payouts[answer] = 1;
 
     conditionalTokens.reportPayouts(questionId, payouts);
   }

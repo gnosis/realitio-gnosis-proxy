@@ -1,7 +1,8 @@
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 
-const rinkebyPrivateKey = process.env.RINKEBY_PRIVATE_KEY;
-const rinkebyRpcUrl = process.env.RINKEBY_RPC_URL;
+const privateKey = process.env.PRIVATE_KEY;
+const rpcUrl = process.env.RPC_URL;
+const gasPrice = process.env.GAS_PRICE || '5000000000';
 
 module.exports = {
   networks: {
@@ -15,9 +16,15 @@ module.exports = {
       port: 8545,
       network_id: '*'
     },
+    mainnet: {
+      network_id: '1',
+      provider: () => new HDWalletProvider(privateKey, rpcUrl),
+      gasPrice
+    },
     rinkeby: {
       network_id: '4',
-      provider: () => new HDWalletProvider(rinkebyPrivateKey, rinkebyRpcUrl)
+      provider: () => new HDWalletProvider(privateKey, rpcUrl),
+      gasPrice
     },
   },
   compilers: {
