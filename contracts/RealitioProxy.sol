@@ -17,21 +17,6 @@ contract RealitioProxy {
     realitio = _realitio;
   }
 
-  function resolveBinaryCondition(bytes32 questionId) public {
-    uint256 answer = uint256(realitio.resultFor(questionId));
-
-    uint256[] memory payouts = new uint256[](2);
-    if (answer == 0) { // answer is no
-      payouts[1] = 1;
-    } else if (answer == 1) { // answer is yes
-      payouts[0] = 1;
-    } else {
-      revert('Only binary answers are supported');
-    }
-
-    conditionalTokens.reportPayouts(questionId, payouts);
-  }
-
   function resolveSingleSelectCondition(bytes32 questionId, uint256 numOutcomes) public {
     uint256 answer = uint256(realitio.resultFor(questionId));
 
