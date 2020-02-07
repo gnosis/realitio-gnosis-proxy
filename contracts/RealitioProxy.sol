@@ -1,18 +1,18 @@
 pragma solidity ^0.5.12;
 
-contract ConditionalTokens {
+interface IConditionalTokens {
     function reportPayouts(bytes32 questionId, uint256[] calldata payouts) external;
 }
 
-contract Realitio {
+interface IRealitio {
     function resultFor(bytes32 questionId) external view returns (bytes32);
 }
 
 contract RealitioProxy {
-  ConditionalTokens public conditionalTokens;
-  Realitio public realitio;
+  IConditionalTokens public conditionalTokens;
+  IRealitio public realitio;
 
-  constructor(ConditionalTokens _conditionalTokens, Realitio _realitio) public {
+  constructor(IConditionalTokens _conditionalTokens, IRealitio _realitio) public {
     conditionalTokens = _conditionalTokens;
     realitio = _realitio;
   }

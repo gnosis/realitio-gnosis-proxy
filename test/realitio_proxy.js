@@ -1,7 +1,7 @@
 const abi = require('ethereumjs-abi')
 
 const RealitioProxy = artifacts.require('RealitioProxy')
-const ConditionalTokens = artifacts.require('ConditionalTokens')
+const ConditionalTokens = artifacts.require('IConditionalTokens')
 const MockContract = artifacts.require('MockContract.sol')
 
 contract('RealitioProxy', () => {
