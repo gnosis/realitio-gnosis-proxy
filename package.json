@@ -14,7 +14,9 @@
   "devDependencies": {
     "@gnosis.pm/mock-contract": "^3.0.7",
     "@truffle/hdwallet-provider": "^1.0.24",
+    "dotenv": "^8.2.0",
     "ethereumjs-abi": "^0.6.8",
-    "truffle": "^5.0.43"
+    "truffle": "^5.0.43",
+    "truffle-plugin-verify": "0.3.7"
   }
 }

@@ -1,8 +1,10 @@
+require('dotenv').config()
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 
 const privateKey = process.env.PRIVATE_KEY;
 const rpcUrl = process.env.RPC_URL;
 const gasPrice = process.env.GAS_PRICE || '5000000000';
+const etherscanApiKey = process.env.ETHERSCAN_API_KEY
 
 module.exports = {
   networks: {
@@ -31,5 +33,7 @@ module.exports = {
     solc: {
       version: '0.5.12'
     }
-  }
+  },
+  plugins: ['truffle-plugin-verify'],
+  api_keys: { etherscan: etherscanApiKey }
 }
