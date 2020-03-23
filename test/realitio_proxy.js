@@ -1,6 +1,7 @@
 const abi = require('ethereumjs-abi')
 
 const RealitioProxy = artifacts.require('RealitioProxy')
+const Realitio = artifacts.require('IRealitio')
 const ConditionalTokens = artifacts.require('IConditionalTokens')
 const MockContract = artifacts.require('MockContract.sol')
 
@@ -20,7 +21,7 @@ contract('RealitioProxy', () => {
 
       let failed = false
       try {
-        await realitioProxy.resolveSingleSelectCondition('0x0', 3)
+        await realitioProxy.resolve('0x0', 2, 'question data', 3)
       } catch (e) {
         failed = true
       }
@@ -31,7 +32,31 @@ contract('RealitioProxy', () => {
     it('should succeed if the question has been finalized with 0', async () => {
       const questionId = '0x1234567890'
       const realitioMock = await MockContract.new()
-      await realitioMock.givenAnyReturn(
+      const realitio = await Realitio.at(realitioMock.address)
+
+      const getContentHash = realitio.contract.methods.getContentHash('0x').encodeABI()
+      const getOpeningTS = realitio.contract.methods.getOpeningTS('0x').encodeABI()
+      const resultFor = realitio.contract.methods.resultFor('0x').encodeABI()
+
+      await realitioMock.givenMethodReturn(
+        getContentHash,
+        abi.rawEncode(
+          ['bytes32'],
+          [web3.utils.soliditySha3(
+            { t: 'uint256', v: 2 },
+            { t: 'uint32', v: 0 },
+            { t: 'string', v: 'question data' },
+          )]
+        )
+      )
+
+      await realitioMock.givenMethodReturn(
+        getOpeningTS,
+        abi.rawEncode(['uint32'], [0])
+      )
+
+      await realitioMock.givenMethodReturn(
+        resultFor,
         abi.rawEncode(
           ['bytes32'],
           ['0x0000000000000000000000000000000000000000000000000000000000000000']
@@ -45,7 +70,7 @@ contract('RealitioProxy', () => {
         conditionalTokensMock.address,
         realitioMock.address
       )
-      await realitioProxy.resolveSingleSelectCondition(questionId, 3)
+      await realitioProxy.resolve(questionId, 2, 'question data', 3)
 
       const conditionalTokens = await ConditionalTokens.at(conditionalTokensMock.address)
       const reportPayoutsAbi = conditionalTokens.contract.methods
@@ -66,7 +91,31 @@ contract('RealitioProxy', () => {
     it('should succeed if the question has been finalized with 1', async () => {
       const questionId = '0x1234567890'
       const realitioMock = await MockContract.new()
-      await realitioMock.givenAnyReturn(
+      const realitio = await Realitio.at(realitioMock.address)
+
+      const getContentHash = realitio.contract.methods.getContentHash('0x').encodeABI()
+      const getOpeningTS = realitio.contract.methods.getOpeningTS('0x').encodeABI()
+      const resultFor = realitio.contract.methods.resultFor('0x').encodeABI()
+
+      await realitioMock.givenMethodReturn(
+        getContentHash,
+        abi.rawEncode(
+          ['bytes32'],
+          [web3.utils.soliditySha3(
+            { t: 'uint256', v: 2 },
+            { t: 'uint32', v: 0 },
+            { t: 'string', v: 'question data' },
+          )]
+        )
+      )
+
+      await realitioMock.givenMethodReturn(
+        getOpeningTS,
+        abi.rawEncode(['uint32'], [0])
+      )
+
+      await realitioMock.givenMethodReturn(
+        resultFor,
         abi.rawEncode(
           ['bytes32'],
           ['0x0000000000000000000000000000000000000000000000000000000000000001']
@@ -80,7 +129,7 @@ contract('RealitioProxy', () => {
         conditionalTokensMock.address,
         realitioMock.address
       )
-      await realitioProxy.resolveSingleSelectCondition(questionId, 3)
+      await realitioProxy.resolve(questionId, 2, 'question data', 3)
 
       const conditionalTokens = await ConditionalTokens.at(conditionalTokensMock.address)
       const reportPayoutsAbi = conditionalTokens.contract.methods
@@ -101,7 +150,31 @@ contract('RealitioProxy', () => {
     it('should succeed if the question has been finalized with 2', async () => {
       const questionId = '0x1234567890'
       const realitioMock = await MockContract.new()
-      await realitioMock.givenAnyReturn(
+      const realitio = await Realitio.at(realitioMock.address)
+
+      const getContentHash = realitio.contract.methods.getContentHash('0x').encodeABI()
+      const getOpeningTS = realitio.contract.methods.getOpeningTS('0x').encodeABI()
+      const resultFor = realitio.contract.methods.resultFor('0x').encodeABI()
+
+      await realitioMock.givenMethodReturn(
+        getContentHash,
+        abi.rawEncode(
+          ['bytes32'],
+          [web3.utils.soliditySha3(
+            { t: 'uint256', v: 2 },
+            { t: 'uint32', v: 0 },
+            { t: 'string', v: 'question data' },
+          )]
+        )
+      )
+
+      await realitioMock.givenMethodReturn(
+        getOpeningTS,
+        abi.rawEncode(['uint32'], [0])
+      )
+
+      await realitioMock.givenMethodReturn(
+        resultFor,
         abi.rawEncode(
           ['bytes32'],
           ['0x0000000000000000000000000000000000000000000000000000000000000002']
@@ -115,7 +188,7 @@ contract('RealitioProxy', () => {
         conditionalTokensMock.address,
         realitioMock.address
       )
-      await realitioProxy.resolveSingleSelectCondition(questionId, 3)
+      await realitioProxy.resolve(questionId, 2, 'question data', 3)
 
       const conditionalTokens = await ConditionalTokens.at(conditionalTokensMock.address)
       const reportPayoutsAbi = conditionalTokens.contract.methods
@@ -136,7 +209,31 @@ contract('RealitioProxy', () => {
     it('should revert if the answer is equal to the number of outcomes', async () => {
       const questionId = '0x1234567890'
       const realitioMock = await MockContract.new()
-      await realitioMock.givenAnyReturn(
+      const realitio = await Realitio.at(realitioMock.address)
+
+      const getContentHash = realitio.contract.methods.getContentHash('0x').encodeABI()
+      const getOpeningTS = realitio.contract.methods.getOpeningTS('0x').encodeABI()
+      const resultFor = realitio.contract.methods.resultFor('0x').encodeABI()
+
+      await realitioMock.givenMethodReturn(
+        getContentHash,
+        abi.rawEncode(
+          ['bytes32'],
+          [web3.utils.soliditySha3(
+            { t: 'uint256', v: 2 },
+            { t: 'uint32', v: 0 },
+            { t: 'string', v: 'question data' },
+          )]
+        )
+      )
+
+      await realitioMock.givenMethodReturn(
+        getOpeningTS,
+        abi.rawEncode(['uint32'], [0])
+      )
+
+      await realitioMock.givenMethodReturn(
+        resultFor,
         abi.rawEncode(
           ['bytes32'],
           ['0x0000000000000000000000000000000000000000000000000000000000000003']
@@ -153,7 +250,7 @@ contract('RealitioProxy', () => {
 
       let failed = false
       try {
-        await realitioProxy.resolveSingleSelectCondition(questionId, 3)
+        await realitioProxy.resolve(questionId, 2, 'question data', 3)
       } catch (e) {
         failed = true
         assert(e.message.includes('Answer must be between 0 and numOutcomes'))
@@ -165,7 +262,31 @@ contract('RealitioProxy', () => {
     it('should revert if the answer is greater than the number of outcomes', async () => {
       const questionId = '0x1234567890'
       const realitioMock = await MockContract.new()
-      await realitioMock.givenAnyReturn(
+      const realitio = await Realitio.at(realitioMock.address)
+
+      const getContentHash = realitio.contract.methods.getContentHash('0x').encodeABI()
+      const getOpeningTS = realitio.contract.methods.getOpeningTS('0x').encodeABI()
+      const resultFor = realitio.contract.methods.resultFor('0x').encodeABI()
+
+      await realitioMock.givenMethodReturn(
+        getContentHash,
+        abi.rawEncode(
+          ['bytes32'],
+          [web3.utils.soliditySha3(
+            { t: 'uint256', v: 2 },
+            { t: 'uint32', v: 0 },
+            { t: 'string', v: 'question data' },
+          )]
+        )
+      )
+
+      await realitioMock.givenMethodReturn(
+        getOpeningTS,
+        abi.rawEncode(['uint32'], [0])
+      )
+
+      await realitioMock.givenMethodReturn(
+        resultFor,
         abi.rawEncode(
           ['bytes32'],
           ['0x0000000000000000000000000000000000000000000000000000000000000004']
@@ -182,13 +303,73 @@ contract('RealitioProxy', () => {
 
       let failed = false
       try {
-        await realitioProxy.resolveSingleSelectCondition(questionId, 3)
+        await realitioProxy.resolve(questionId, 2, 'question data', 3)
       } catch (e) {
         failed = true
         assert(e.message.includes('Answer must be between 0 and numOutcomes'))
       }
 
       assert(failed)
+    })
+
+    it('should give even payouts if answer is invalid', async () => {
+      const questionId = '0x1234567890'
+      const realitioMock = await MockContract.new()
+      const realitio = await Realitio.at(realitioMock.address)
+
+      const getContentHash = realitio.contract.methods.getContentHash('0x').encodeABI()
+      const getOpeningTS = realitio.contract.methods.getOpeningTS('0x').encodeABI()
+      const resultFor = realitio.contract.methods.resultFor('0x').encodeABI()
+
+      await realitioMock.givenMethodReturn(
+        getContentHash,
+        abi.rawEncode(
+          ['bytes32'],
+          [web3.utils.soliditySha3(
+            { t: 'uint256', v: 2 },
+            { t: 'uint32', v: 0 },
+            { t: 'string', v: 'question data' },
+          )]
+        )
+      )
+
+      await realitioMock.givenMethodReturn(
+        getOpeningTS,
+        abi.rawEncode(['uint32'], [0])
+      )
+
+      await realitioMock.givenMethodReturn(
+        resultFor,
+        abi.rawEncode(
+          ['bytes32'],
+          ['0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff']
+        )
+      )
+
+      const conditionalTokensMock = await MockContract.new()
+      await conditionalTokensMock.givenAnyReturnBool(true)
+
+      const realitioProxy = await RealitioProxy.new(
+        conditionalTokensMock.address,
+        realitioMock.address
+      )
+
+      await realitioProxy.resolve(questionId, 2, 'question data', 3)
+
+      const conditionalTokens = await ConditionalTokens.at(conditionalTokensMock.address)
+      const reportPayoutsAbi = conditionalTokens.contract.methods
+        .reportPayouts(questionId, [1, 1, 1])
+        .encodeABI()
+
+      // check that report payouts was called only once
+      const callCount = await conditionalTokensMock.invocationCountForMethod.call(reportPayoutsAbi)
+      assert.equal(callCount.toString(), 1)
+
+      // check that report payouts was called with the correct arguments
+      const callWithArgsCount = await conditionalTokensMock.invocationCountForCalldata.call(
+        reportPayoutsAbi
+      )
+      assert.equal(callWithArgsCount.toString(), 1)
     })
   })
 })
