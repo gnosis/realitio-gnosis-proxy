@@ -13,10 +13,16 @@ interface IRealitio {
 contract RealitioProxy {
   IConditionalTokens public conditionalTokens;
   IRealitio public realitio;
+  uint256 public nuancedBinaryTemplateId;
 
-  constructor(IConditionalTokens _conditionalTokens, IRealitio _realitio) public {
+  constructor(
+    IConditionalTokens _conditionalTokens,
+    IRealitio _realitio,
+    uint256 _nuancedBinaryTemplateId
+  ) public {
     conditionalTokens = _conditionalTokens;
     realitio = _realitio;
+    nuancedBinaryTemplateId = _nuancedBinaryTemplateId;
   }
 
   function resolve(
@@ -34,6 +40,8 @@ contract RealitioProxy {
     if (templateId == 0 || templateId == 2) {
       // binary or single-select
       payouts = getSingleSelectPayouts(questionId, numOutcomes);
+    } else if (templateId == nuancedBinaryTemplateId) {
+      payouts = getNuancedBinaryPayouts(questionId, numOutcomes);
     } else {
       revert("Unknown templateId");
     }
@@ -53,6 +61,24 @@ contract RealitioProxy {
     } else {
       require(answer < numOutcomes, "Answer must be between 0 and numOutcomes");
       payouts[answer] = 1;
+    }
+
+    return payouts;
+  }
+
+  function getNuancedBinaryPayouts(bytes32 questionId, uint256 numOutcomes) internal view returns (uint256[] memory) {
+    require(numOutcomes == 2, "Number of outcomes expected to be 2");
+    uint256[] memory payouts = new uint256[](2);
+
+    uint256 answer = uint256(realitio.resultFor(questionId));
+
+    if (answer == uint256(-1)) {
+      payouts[0] = 1;
+      payouts[1] = 1;
+    } else {
+      require(answer < 5, "Answer must be between 0 and 4");
+      payouts[0] = 4 - answer;
+      payouts[1] = answer;
     }
 
     return payouts;
