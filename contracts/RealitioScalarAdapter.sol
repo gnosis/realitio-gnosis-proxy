@@ -8,7 +8,7 @@ contract RealitioScalarAdapter {
 
   constructor(
     IConditionalTokens _conditionalTokens,
-    IRealitio _realitio,
+    IRealitio _realitio
   ) public {
     conditionalTokens = _conditionalTokens;
     realitio = _realitio;
@@ -16,16 +16,16 @@ contract RealitioScalarAdapter {
 
   event QuestionIdAnnouncement(
     bytes32 indexed realitioQuestionId,
-    bytes32 indexed conditionQuestionId
+    bytes32 indexed conditionQuestionId,
     uint256 low,
-    uint256 high,
+    uint256 high
   );
 
   function announceConditionQuestionId(
     bytes32 questionId,
     uint256 low,
     uint256 high
-  ) {
+  ) external {
     emit QuestionIdAnnouncement(
       questionId,
       keccak256(abi.encode(
@@ -40,24 +40,20 @@ contract RealitioScalarAdapter {
 
   function resolve(
     bytes32 questionId,
-    uint256 templateId,
     string calldata question,
     uint256 low,
     uint256 high
   ) external {
     // check that the given templateId and question match the questionId
     bytes32 contentHash = keccak256(abi.encodePacked(
-      templateId,
+      uint256(3),
       realitio.getOpeningTS(questionId),
       question
     ));
 
     require(contentHash == realitio.getContentHash(questionId), "Content hash mismatch");
-    require(templateId == 3, "Template ID must correspond with number type");
     require(low < high, "Range invalid");
     require(high != uint256(-1), "Invalid high point");
-
-    uint256 size = high - low;
 
     uint256[] memory payouts = new uint256[](2);
 
