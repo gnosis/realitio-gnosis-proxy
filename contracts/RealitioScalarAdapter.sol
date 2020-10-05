@@ -46,7 +46,7 @@ contract RealitioScalarAdapter {
   ) external {
     // check that the given templateId and question match the questionId
     bytes32 contentHash = keccak256(abi.encodePacked(
-      uint256(3),
+      uint256(1),
       realitio.getOpeningTS(questionId),
       question
     ));

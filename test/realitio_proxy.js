@@ -1133,7 +1133,7 @@ contract('RealitioProxy', () => {
           abi.rawEncode(
             ['bytes32'],
             [web3.utils.soliditySha3(
-              { t: 'uint256', v: 3 },
+              { t: 'uint256', v: 1 },
               { t: 'uint32', v: 0 },
               { t: 'string', v: 'question data' },
             )]
