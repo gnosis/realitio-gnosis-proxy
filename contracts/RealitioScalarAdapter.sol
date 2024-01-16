@@ -57,7 +57,7 @@ contract RealitioScalarAdapter {
 
     uint256[] memory payouts = new uint256[](2);
 
-    uint256 answer = uint256(realitio.resultFor(questionId));
+    uint256 answer = uint256(realitio.resultForOnceSettled(questionId));
 
     if (answer == uint256(-1)) {
       payouts[0] = 1;

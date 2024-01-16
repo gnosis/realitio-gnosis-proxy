@@ -27,6 +27,13 @@ contract RealitioProxy {
     bytes32 contentHash = keccak256(abi.encodePacked(templateId, realitio.getOpeningTS(questionId), question));
     require(contentHash == realitio.getContentHash(questionId), "Content hash mismatch");
 
+    if(realitio.isFinalized(questionId) && realitio.isSettledTooSoon(questionId)) {
+      bytes32 replacementId = realitio.reopened_questions(questionId);
+      if (replacementId != bytes32(0)) {
+        questionId = replacementId;
+      }
+    }
+
     uint256[] memory payouts;
 
     if (templateId == 0 || templateId == 2) {
@@ -44,7 +51,7 @@ contract RealitioProxy {
   function getSingleSelectPayouts(bytes32 questionId, uint256 numOutcomes) internal view returns (uint256[] memory) {
     uint256[] memory payouts = new uint256[](numOutcomes);
 
-    uint256 answer = uint256(realitio.resultFor(questionId));
+    uint256 answer = uint256(realitio.resultForOnceSettled(questionId));
 
     if (answer == uint256(-1)) {
       for (uint256 i = 0; i < numOutcomes; i++) {
@@ -62,7 +69,7 @@ contract RealitioProxy {
     require(numOutcomes == 2, "Number of outcomes expected to be 2");
     uint256[] memory payouts = new uint256[](2);
 
-    uint256 answer = uint256(realitio.resultFor(questionId));
+    uint256 answer = uint256(realitio.resultForOnceSettled(questionId));
 
     if (answer == uint256(-1)) {
       payouts[0] = 1;
